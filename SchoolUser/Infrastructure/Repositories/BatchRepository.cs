@@ -32,9 +32,9 @@ namespace SchoolUser.Infrastructure.Repositories
                         Code = b.Code,
                         IsActive = b.IsActive,
                         TeacherId = b.TeacherId,
-                        ClassCategories = b.ClassCategories!.Where(cc => cc.BatchId == b.Id).ToList(),
-                        ClassStreams = b.ClassCategories!.Select(cc => cc.ClassStream!.Name).ToList(),
-                        ClassRanks = b.ClassCategories!.Select(cc => cc.ClassRank!.Name).ToList()
+                        ClassCategories = b.ClassCategories!.Where(cc => cc.BatchId == b.Id).Distinct().ToList(),
+                        ClassStreams = b.ClassCategories!.Select(cc => cc.ClassStream!.Name).Distinct().ToList(),
+                        ClassRanks = b.ClassCategories!.Select(cc => cc.ClassRank!.Name).Distinct().ToList()
                     });
             }
             catch (Exception ex)
