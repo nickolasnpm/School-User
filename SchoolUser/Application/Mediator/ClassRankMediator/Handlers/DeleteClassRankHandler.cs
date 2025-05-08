@@ -1,10 +1,10 @@
 using MediatR;
-using SchoolUser.Application.Mediator.ClassCategoryMediator.Commands;
+using SchoolUser.Application.Mediator.ClassRankMediator.Commands;
 using SchoolUser.Domain.Interfaces.Repositories;
 
 namespace SchoolUser.Application.Mediator.ClassRankMediator.Handlers
 {
-    public class DeleteClassRankHandler : IRequestHandler<DeleteClassCategoryCommand, bool>
+    public class DeleteClassRankHandler : IRequestHandler<DeleteClassRankCommand, bool>
     {
         private readonly IClassRankRepository _ClassRankRepository;
 
@@ -13,7 +13,7 @@ namespace SchoolUser.Application.Mediator.ClassRankMediator.Handlers
             _ClassRankRepository = ClassRankRepository;
         }
 
-        public async Task<bool> Handle(DeleteClassCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(DeleteClassRankCommand request, CancellationToken cancellationToken)
         {
             return await _ClassRankRepository.DeleteAsync(request.id);
         }
