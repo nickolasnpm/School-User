@@ -4,7 +4,7 @@ namespace SchoolUser.Application.ErrorHandlings
     {
         public BusinessRuleException(string message) : base(message)
         {
-
+            Console.WriteLine(message);
         }
     }
 }

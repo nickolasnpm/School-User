@@ -18,14 +18,12 @@ namespace SchoolUser.Domain.Services
         private readonly ISender _sender;
         private readonly IReturnValueConstants _returnValueConstants;
         private readonly IClassSubjectServices _classSubjectServices;
-        private readonly ISubjectServices _subjectServices;
 
-        public ClassCategoryServices(ISender sender, IReturnValueConstants returnValueConstants, IClassSubjectServices classSubjectServices, ISubjectServices subjectServices)
+        public ClassCategoryServices(ISender sender, IReturnValueConstants returnValueConstants, IClassSubjectServices classSubjectServices)
         {
             _sender = sender;
             _returnValueConstants = returnValueConstants;
             _classSubjectServices = classSubjectServices;
-            _subjectServices = subjectServices;
         }
 
         public async Task<IEnumerable<ClassCategory>?> GetAllService()
@@ -46,29 +44,29 @@ namespace SchoolUser.Domain.Services
             }
 
             var batch = await _sender.Send(new GetBatchByIdQuery(classCategoryDto.BatchId));
-            var classRank = await _sender.Send(new GetClassRankByIdQuery(classCategoryDto.ClassRankId));
             var classStream = await _sender.Send(new GetClassStreamByIdQuery(classCategoryDto.ClassStreamId));
+            var classRank = await _sender.Send(new GetClassRankByIdQuery(classCategoryDto.ClassRankId));
 
             if (batch == null || classStream == null || classRank == null)
             {
-                throw new BusinessRuleException(string.Format(_returnValueConstants.FAILED_CREATE, _entityName));
+                throw new BusinessRuleException(string.Format(_returnValueConstants.ITEM_CANNOT_BE_NULL, $"Batch, Stream, and Rank"));
             }
 
-            var currentYear = DateTime.Now.Year;
-            var categoryCode = $"{batch!.Code}-{classRank!.Code}-{classStream!.Code}";
+            var selectedYear = classCategoryDto.AcademicYear;
+            var categoryCode = $"{batch!.Code}-{classStream!.Code}-{classRank!.Code}";
 
-            var classCategory = await _sender.Send(new GetClassCategoryByCodeAndYearQuery(categoryCode, currentYear));
+            var classCategory = await _sender.Send(new GetClassCategoryByCodeAndYearQuery(categoryCode, selectedYear));
 
             if (classCategory != null)
             {
-                throw new BusinessRuleException(string.Format(_returnValueConstants.ITEM_DOES_NOT_EXIST, _entityName));
+                throw new BusinessRuleException(string.Format(_returnValueConstants.ITEM_ALREADY_EXIST, $"Class Category code: {categoryCode} for year {selectedYear}"));
             }
 
             classCategory = new ClassCategory()
             {
                 Id = Guid.NewGuid(),
                 Code = categoryCode,
-                AcademicYear = currentYear,
+                AcademicYear = selectedYear,
                 BatchId = classCategoryDto.BatchId,
                 ClassRankId = classCategoryDto.ClassRankId,
                 ClassStreamId = classCategoryDto.ClassStreamId
@@ -78,7 +76,7 @@ namespace SchoolUser.Domain.Services
 
             if (createdClassCategory == null)
             {
-                throw new BusinessRuleException(string.Format(_returnValueConstants.FAILED_CREATE, _entityName));
+                throw new BusinessRuleException(string.Format(_returnValueConstants.FAILED_CREATE, $"Class Category code: {categoryCode} for year {selectedYear}"));
             }
 
             if (classCategoryDto.SubjectIds == null && classCategoryDto.SubjectIds!.Count == 0)
