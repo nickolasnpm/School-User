@@ -24,6 +24,8 @@ namespace SchoolUser.Domain.Models
         #endregion
 
         #region ClassCategory - ClassSubject - Subject
+
+        [JsonIgnore]
         public List<ClassSubject>? ClassSubjects { get; set; }
 
         [NotMapped]
