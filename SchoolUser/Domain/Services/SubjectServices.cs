@@ -122,7 +122,13 @@ namespace SchoolUser.Domain.Services
             }
 
             var updatedSubject = await _sender.Send(new UpdateSubjectCommand(subject)) != null;
-            var updatedTeacher = await _sender.Send(new UpdateTeacherCommand(teacher)) != null;
+            var updatedTeacher = true;
+            
+            if (teacher.Id != subjectDto.TeacherId)
+            {
+                updatedTeacher = await _sender.Send(new UpdateTeacherCommand(teacher)) != null;
+            }
+
             return updatedSubject && updatedTeacher;
         }
 
