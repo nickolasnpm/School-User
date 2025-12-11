@@ -5,7 +5,7 @@ namespace SchoolUser.Domain.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<User>?> GetAllUsersAsync();
+        Task<IQueryable<User>?> GetAllUsersAsync();
         Task<(IEnumerable<User>?, int)> GetPaginatedUsersAsync(UsersListRequestDto listRequestDto);
         Task<User?> GetByIdAsync(Guid id);
         Task<User?> GetByJwtTokenAsync(string jwtToken);
