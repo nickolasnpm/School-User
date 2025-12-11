@@ -281,10 +281,6 @@ __pycache__/
 # .NET Core build folders
 **/bin/*
 **/obj/*
-SchoolUser/appsettings.json
-SchoolUser/appsettings.Development.json
-azure-pipeline-dev.yml
-azure-pipeline-prod.yml
 
 # Common node modules locations
 /node_modules

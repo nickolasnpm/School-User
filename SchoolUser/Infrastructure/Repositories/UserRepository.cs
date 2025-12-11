@@ -99,11 +99,11 @@ namespace SchoolUser.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<User>?> GetAllUsersAsync()
+        public Task<IQueryable<User>?> GetAllUsersAsync()
         {
             try
             {
-                return await GetAllQuery().OrderBy(u => u.FullName).ToListAsync();
+                return (Task<IQueryable<User>?>)GetAllQuery().OrderBy(u => u.FullName).AsQueryable();
             }
             catch (Exception ex)
             {
